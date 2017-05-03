@@ -243,3 +243,10 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/Temp
+/Library/ShaderCache
+/Library/ScriptAssemblies
+/Library/UnityAssemblies
+/Library/metadata
+/Library/Collab
+/Library
