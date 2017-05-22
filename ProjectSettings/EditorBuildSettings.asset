@@ -4,4 +4,22 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/menus/main menu.unity
+    guid: 8f27c8177f321ea439133726d7e1b047
+  - enabled: 1
+    path: Assets/menus/CharacterCustom.unity
+    guid: 2b269578931610f4f9a0581aedb3b8d6
+  - enabled: 1
+    path: Assets/ginger/Effects/Camerashake.unity
+    guid: 11add2c31c0b6f446b7ce1dae3571b27
+  - enabled: 1
+    path: Assets/menus/credits.unity
+    guid: 5e632ae980ab64c479fa2ef11178cf22
+  - enabled: 1
+    path: Assets/ZomScripts/TestScene.unity
+    guid: 219aa4680b8670347860e4ce5d5dcef9
+  - enabled: 1
+    path: Assets/Henry's Junk Folder/Test Scene - Henry.unity
+    guid: bc1e1f6dd6499b741bd666418e35b0d9

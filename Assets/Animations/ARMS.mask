@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: ARMS
+  m_Mask: 01000000000000000000000000000000000000000100000001000000010000000100000000000000000000000000000000000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: robot
+    m_Weight: 1
+  - m_Path: robot_piston_ball_joint
+    m_Weight: 1
+  - m_Path: robot_piston_ball_joint/robot_roller_ball_joint
+    m_Weight: 0
+  - m_Path: robot_piston_ball_joint/robot_roller_ball_joint/robot_chest_joint
+    m_Weight: 0
+  - m_Path: robot_piston_ball_joint/robot_roller_ball_joint/robot_chest_joint/robot_left_shoulder_joint
+    m_Weight: 1
+  - m_Path: robot_piston_ball_joint/robot_roller_ball_joint/robot_chest_joint/robot_left_shoulder_joint/robot_left_elbow_joint
+    m_Weight: 1
+  - m_Path: robot_piston_ball_joint/robot_roller_ball_joint/robot_chest_joint/robot_left_shoulder_joint/robot_left_elbow_joint/robot_left_wrist_joint
+    m_Weight: 1
+  - m_Path: robot_piston_ball_joint/robot_roller_ball_joint/robot_chest_joint/robot_neck_ball_joint
+    m_Weight: 0
+  - m_Path: robot_piston_ball_joint/robot_roller_ball_joint/robot_chest_joint/robot_neck_ball_joint/robot_head_ball_joint
+    m_Weight: 0
+  - m_Path: robot_piston_ball_joint/robot_roller_ball_joint/robot_chest_joint/robot_right_shoulder_joint
+    m_Weight: 1
+  - m_Path: robot_piston_ball_joint/robot_roller_ball_joint/robot_chest_joint/robot_right_shoulder_joint/robot_right_elbow_joint
+    m_Weight: 1
+  - m_Path: robot_piston_ball_joint/robot_roller_ball_joint/robot_chest_joint/robot_right_shoulder_joint/robot_right_elbow_joint/robot_right_wrist_joint
+    m_Weight: 1
