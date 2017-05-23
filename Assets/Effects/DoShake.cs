@@ -9,6 +9,12 @@ public class DoShake : MonoBehaviour {
     public float decreaseFactor;
     public Quaternion rot;
     Vector3 pos;
+    Vector3 startPos;
+
+void Start()
+    {
+        startPos = transform.position;
+    }
     
 void Update()
     {
@@ -17,10 +23,10 @@ void Update()
             
 
             transform.position = pos + Random.insideUnitSphere * amnt;
-            transform.rotation = new Quaternion(rot.x * .2f,
-                                rot.y  * .2f,
-                                rot.z  * .2f,
-                                rot.w * .2f);
+            transform.rotation = new Quaternion(rot.x * .01f,
+                                rot.y * .01f,
+                                rot.z * .01f,
+                                rot.w * .01f);
 
             amnt -= decreaseFactor;
         }
@@ -28,13 +34,19 @@ void Update()
         {
             Shaking = false;
         }
+        
+        if (amnt <= 0)
+        {
+            transform.position = startPos;
+        }
+
     }
-    public void Doshake()
+    public void Doshake(float time = .3f, float decrease = .2f)
     {
         pos = transform.position;
         rot = transform.rotation;
-        amnt = 0.3f;
-        decreaseFactor = 0.2f;
+        amnt = time;
+        decreaseFactor = decrease;
         Shaking = true;
     }
 

@@ -15,7 +15,7 @@ public class DamageCalculations : MonoBehaviour {
 
         if (isBlock)
         {
-            float armor = self.myBody.torso.GetComponent<BodyPart>().armorValue;
+            float armor = self.myBody.torso.GetComponent<BodyPart>().blockAmount;
             dmg *= (1 - (armor / 10));
         }     
 

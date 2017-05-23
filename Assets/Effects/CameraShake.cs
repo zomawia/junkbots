@@ -14,16 +14,17 @@ public class CameraShake : MonoBehaviour
         Shaking = false;
     }
 
-   
+    //void OnTriggerEnter(Collider collision)
+    //{
+    //    camShakeRef.Doshake();       
+    //}
 
-    void OnTriggerEnter(Collider collision)
+
+
+    //Call this on FLINCH in playerController
+    public void Shake(float time, float decrease)
     {
-        
-
-        camShakeRef.Doshake();
-            
-
-       
+        camShakeRef.Doshake(time, decrease);
     }
 	
 }

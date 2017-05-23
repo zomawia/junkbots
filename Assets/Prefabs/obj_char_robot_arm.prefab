@@ -22,6 +22,8 @@ GameObject:
   - component: {fileID: 33357014224636926}
   - component: {fileID: 23909974265257874}
   - component: {fileID: 95057298744818818}
+  - component: {fileID: 65434769999307522}
+  - component: {fileID: 114785369030743500}
   m_Layer: 0
   m_Name: obj_char_robot_arm
   m_TagString: Untagged
@@ -81,6 +83,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1746843371970306}
   m_Mesh: {fileID: 4300000, guid: 2eed26672b5975044a7cd188bd18f1af, type: 3}
+--- !u!65 &65434769999307522
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1746843371970306}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.094955444, y: 0.020000016, z: 0.019021144}
+  m_Center: {x: -0.03747772, y: 0.000000004467692, z: -0.0000000034938854}
 --- !u!95 &95057298744818818
 Animator:
   serializedVersion: 3
@@ -98,3 +112,24 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &114785369030743500
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1746843371970306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ab1625fd242ab24784b9045146ae995, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  part: 0
+  maxHealth: 30
+  flinchDuration: 1
+  flinchThreshold: 1
+  moveSpeed: 1
+  cooldownSpeed: 1
+  staminaRegen: 1
+  punchSpeed: 30
+  punchDamage: 1
+  blockAmount: 1

@@ -9,17 +9,19 @@ public class BodyPart : MonoBehaviour {
 
     public Part part;
 
+    public float maxHealth = 1;
+
+    public float flinchDuration = 1;
+    public float flinchThreshold = 1;
+
+    public float moveSpeed = 1;
+    public float cooldownSpeed = 1;
+    public float staminaRegen = 1;
+
     public float punchSpeed = 1;
     public float punchDamage = 1;
-    public float leanSpeed = 1;
-    public float blockSpeed = 1;
-    public float flinchThreshold = 1;
-    public float flinchDuration = 1;
-    public float armorValue = 1;
-    public float staminaRegen = 1;
-    public float baseDamage = 1;
+    public float blockAmount = 1;
 
-    public float maxHealth = 1;
     public float totalHealth { get; set; }
 
     public CharacterData character { get; set; }

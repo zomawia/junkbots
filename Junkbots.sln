@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2015
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Junkbots.CSharp", "Junkbots.CSharp.csproj", "{48DBFED4-A035-1447-0DA9-7058830B1E57}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Junkbots.CSharp.Editor", "Junkbots.CSharp.Editor.csproj", "{D3A19975-ED4D-EB30-14CD-7BC8CF41F055}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{48DBFED4-A035-1447-0DA9-7058830B1E57}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48DBFED4-A035-1447-0DA9-7058830B1E57}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48DBFED4-A035-1447-0DA9-7058830B1E57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3A19975-ED4D-EB30-14CD-7BC8CF41F055}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3A19975-ED4D-EB30-14CD-7BC8CF41F055}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3A19975-ED4D-EB30-14CD-7BC8CF41F055}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3A19975-ED4D-EB30-14CD-7BC8CF41F055}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

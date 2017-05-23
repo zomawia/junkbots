@@ -43,6 +43,9 @@ public class CharacterData : MonoBehaviour {
     public bool useManager = true;
     public bool isPlayer1;
 
+    public Canvas gameover;
+    public ParticleSystem smoke;
+
     public float totalHealth
     {
         get
@@ -56,8 +59,15 @@ public class CharacterData : MonoBehaviour {
 
     private void Start()
     {
+        //Whenever gameover is used NONE OF THE REST OF THE START FUNCTION runs
+        //if (headActive.GetComponent<BodyPart>().totalHealth >= 0 &&
+        //          torsoActive.GetComponent<BodyPart>().totalHealth >= 0)
+        //{
+        //    gameover.gameObject.SetActive(false);
+        //}
+
+        //gameover.gameObject.SetActive(false);
         activeParts = new List<GameObject>();
-        //isPlayer1 = true;
 
         if(GameObject.Find("GameManager") != null)
             manager = GameObject.Find("GameManager").GetComponent<GameManager>();
@@ -97,35 +107,6 @@ public class CharacterData : MonoBehaviour {
         if (torsoActive != null) Destroy(torsoActive);
         if (leftArmActive != null) Destroy(leftArmActive);
         if (rightArmActive != null) Destroy(rightArmActive);
-    }
-
-    // Use this for initialization
-    private void OnValidate()
-    {
-        //attachParts();
-
-
-        //if (headActive != null)
-        //{
-        //    headActive.transform.SetPositionAndRotation(headPos.position, headPos.rotation);
-        //}
-        //if (torsoActive != null)
-        //{
-        //    torsoActive.transform.SetPositionAndRotation(torsoPos.position, torsoPos.rotation);
-        //}
-            
-        //if (leftArmActive != null)
-        //{
-        //    leftArmActive.transform.SetPositionAndRotation(leftArmPos.position, leftArmPos.rotation);
-        //    leftArmActive.GetComponent<BodyPart>().part = Part.leftArm;
-        //}
-            
-        //if (rightArmActive != null)
-        //{
-        //    rightArmActive.transform.SetPositionAndRotation(rightArmPos.position, rightArmPos.rotation);
-        //    rightArmActive.GetComponent<BodyPart>().part = Part.rightArm;
-        //}
-            
     }
 
     void Update()
@@ -179,6 +160,13 @@ public class CharacterData : MonoBehaviour {
         activeParts.Add(upperLeftArmActive);
         activeParts.Add(leftArmActive);
 
+        if(headActive.GetComponent<BodyPart>().totalHealth <= 0 &&
+                   torsoActive.GetComponent<BodyPart>().totalHealth <= 0)
+        {
+            gameover.gameObject.SetActive(true);
+            smoke.gameObject.SetActive(true);
+            PlayerController.Destroy(null);
+        }
     }
 
 }

@@ -22,6 +22,8 @@ GameObject:
   - component: {fileID: 33268274175089960}
   - component: {fileID: 23382570509074088}
   - component: {fileID: 95544226726861818}
+  - component: {fileID: 65889963446817720}
+  - component: {fileID: 114164604263076094}
   m_Layer: 0
   m_Name: obj_char_spatula_arm
   m_TagString: Untagged
@@ -81,6 +83,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1861884170482382}
   m_Mesh: {fileID: 4300000, guid: 74b9623b544700e46bebda0f939e5595, type: 3}
+--- !u!65 &65889963446817720
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1861884170482382}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1153332, y: 0.009, z: 0.030258577}
+  m_Center: {x: -0.049803104, y: -0.002, z: -0.0000000034053182}
 --- !u!95 &95544226726861818
 Animator:
   serializedVersion: 3
@@ -98,3 +112,24 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &114164604263076094
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1861884170482382}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ab1625fd242ab24784b9045146ae995, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  part: 0
+  maxHealth: 40
+  flinchDuration: 1
+  flinchThreshold: 1
+  moveSpeed: 1
+  cooldownSpeed: 1
+  staminaRegen: 1
+  punchSpeed: 1
+  punchDamage: 2
+  blockAmount: 3

@@ -97,6 +97,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4437281721626784}
   - component: {fileID: 95227806917797544}
+  - component: {fileID: 65231673354071942}
+  - component: {fileID: 114574821520210702}
   m_Layer: 0
   m_Name: obj_char_rockemhead
   m_TagString: Untagged
@@ -226,6 +228,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1201826586156646}
   m_Mesh: {fileID: 4300000, guid: b9e8332e5aa6a68458bf0d7bbfd5f9d4, type: 3}
+--- !u!65 &65231673354071942
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1997387112292490}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!95 &95227806917797544
 Animator:
   serializedVersion: 3
@@ -243,3 +257,24 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &114574821520210702
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1997387112292490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ab1625fd242ab24784b9045146ae995, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  part: 0
+  maxHealth: 30
+  flinchDuration: 0.5
+  flinchThreshold: 10
+  moveSpeed: 1
+  cooldownSpeed: 1
+  staminaRegen: 1
+  punchSpeed: 1
+  punchDamage: 1
+  blockAmount: 1

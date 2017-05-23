@@ -57,6 +57,7 @@ public class PlayerController : MonoBehaviour {
 
     public CharacterData myBody;
     public PlayerController opponentCtrl;
+    CameraShake cameraShake;
 
     //LinkedList<PunchData> punchQueue;
 
@@ -114,7 +115,8 @@ public class PlayerController : MonoBehaviour {
 
     // For charging punch graphic
     Component halo;
-
+    public ParticleSystem charge;
+    public ParticleSystem plasma;
     public Animator anim { get; set; }
 
     //Transforms positions to check collisions when punches are thrown
@@ -127,12 +129,16 @@ public class PlayerController : MonoBehaviour {
     // Use this for initialization
     void Start() {
 
+        if (GetComponent<CameraShake>())
+            cameraShake = GetComponent<CameraShake>();
+
         //Set animator
         if (GetComponent<Animator>())
             anim = GetComponent<Animator>();
 
         // Punch Charge visual indicator
         halo = gameObject.GetComponent("Halo");
+        
 
         //Set input controller
         if (GetComponent<XboxController>())        
@@ -806,7 +812,7 @@ public class PlayerController : MonoBehaviour {
 
                 if (myAttackState == AttackState.WINDUP)
                 {
-                    Component halo = gameObject.GetComponent("Halo");                    
+                    Component halo = gameObject.GetComponent("Halo");
                     
                     if (myZone == Zone.HIGH_RIGHT || myZone == Zone.LOW_RIGHT)
                     {
@@ -818,7 +824,8 @@ public class PlayerController : MonoBehaviour {
                     }
 
                     halo.GetType().GetProperty("enabled").SetValue(halo, true, null);
-
+                    charge.gameObject.SetActive(true);
+                    charge.Play();
                     timer += Time.deltaTime;
                     //Release punch if fully charged
                     if (timer >= maxPunchCharge)
@@ -834,7 +841,8 @@ public class PlayerController : MonoBehaviour {
                 if (myAttackState == AttackState.RELEASE)
                 {                    
                     halo.GetType().GetProperty("enabled").SetValue(halo, false, null);
-
+                    charge.Pause();
+                    charge.gameObject.SetActive(false);
                     anim.SetFloat("punchSpeed", myBody.stamina/100 * anim.GetFloat("punchSpeed") );
                     anim.SetFloat("punchPower", punchPower);
 
@@ -959,8 +967,15 @@ public class PlayerController : MonoBehaviour {
                 break;
 
             case PlayerState.FLINCH:
-
+                
                 anim.SetBool("flinch", true);
+                Debug.Log("asdasdasdasd");
+                plasma.time = 0;
+                plasma.Stop();
+                plasma.Play();
+
+                cameraShake.Shake(.05f, .025f);
+
                 timer += Time.deltaTime;
                 //End flinch when timer is up
                 if (timer >= flinchDuration)
