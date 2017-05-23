@@ -18,7 +18,7 @@ public class CameraShake : MonoBehaviour
 
     void OnTriggerEnter(Collider collision)
     {
-        //if(collision.gameObject.name == "Player2" || collision.gameObject.name == "Player1")
+        
 
         camShakeRef.Doshake();
             

@@ -31,7 +31,7 @@ public class CharacterSelectManager : MonoBehaviour {
     public void ApplySelection()
     {
         gm.updateParts(p1Parts[0], p1Parts[1], p1Parts[2], p1Parts[3], true);
-        gm.updateParts(p2Parts[0], p2Parts[1], p2Parts[2], p2Parts[3], true);
+        gm.updateParts(p2Parts[0], p2Parts[1], p2Parts[2], p2Parts[3], false);
     }
     
     public void p1Ready()
@@ -57,11 +57,11 @@ public class CharacterSelectManager : MonoBehaviour {
     {
         if (!(isP1Ready && isP2Ready)) return;
 
-        
+        //ApplySelection();
 
         DontDestroyOnLoad(transform.gameObject);
 
-        SceneManager.LoadScene("TestScene", LoadSceneMode.Single);
+        SceneManager.LoadScene("TestScene_2", LoadSceneMode.Single);
         //SceneManager.LoadScene("Test Scene - Henry", LoadSceneMode.Single);
         /*
          * [] Get our data about character selection ready. 

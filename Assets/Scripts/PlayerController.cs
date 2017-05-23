@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour {
 
     public enum MoveState
     {
-        DEFAULT, DODGERAM              
+        DEFAULT, DODGERAM, RETURN              
     }
 
     //One more ENUM for good luck
@@ -58,7 +58,8 @@ public class PlayerController : MonoBehaviour {
     public CharacterData myBody;
     public PlayerController opponentCtrl;
 
-    //For sanity
+    //LinkedList<PunchData> punchQueue;
+
     public float leftTrigger = 0f;
     public float rightTrigger = 0f;
     public float yAxisRightJoystick = 0f;
@@ -73,12 +74,13 @@ public class PlayerController : MonoBehaviour {
 
     float leanAxis = 0f;
 
-
     // Punch variables
     ushort comboCount = 0;
     ushort comboLimit = 4;
     float comboWindowTime = .5f;
     float comboSpeedBuff = .2f;
+
+    float dodgeCost = 20f;
 
     public float punchPower = 0f;
     float maxPunchCharge = 1.5f;
@@ -86,20 +88,18 @@ public class PlayerController : MonoBehaviour {
     float recoveryWindowTime = .5f;
     float releaseTime = 1f;
 
-    float buttonHoldTimer = 0f;
-    float timedBlockThreshold = .7f;
+    public float buttonHoldTimer = 0f;
+    float timedBlockThreshold = 1.5f;
     
-    float blockEnterTime = .3f;
+    float blockEnterTime = .25f;
     float blockExitTime = .7f;
 
     public float flinchThreshold = 5f;
-    float flinchDuration = 1f;            
+    float flinchDuration = 1.25f;            
     
-    bool canCounterPunch = false;
+    public bool canCounterPunch = false;
 
     string lastButtonPressed;    
-
-    float animPlayTimer = 0f;
 
     float timer = 0f;
 
@@ -109,6 +109,7 @@ public class PlayerController : MonoBehaviour {
     public AttackState myAttackState;
     public BlockState myBlockState;
     public Zone myZone;
+    public MoveState myMoveState;
     public ActionUsed myActionUsed;
 
     // For charging punch graphic
@@ -119,7 +120,10 @@ public class PlayerController : MonoBehaviour {
     //Transforms positions to check collisions when punches are thrown
     public Transform leftHand;
     public Transform rightHand;
-    
+
+    public Vector3 startingPos;
+    public Vector3 MaxDodgePos;
+
     // Use this for initialization
     void Start() {
 
@@ -152,6 +156,8 @@ public class PlayerController : MonoBehaviour {
         //Make sure the player is idling
         myState = PlayerState.IDLE;
 
+        startingPos = transform.position;
+        MaxDodgePos = -transform.forward * .5f;
     }
     bool isDucking()
     {
@@ -187,8 +193,7 @@ public class PlayerController : MonoBehaviour {
         punchPower = 0f;
         buttonHoldTimer = 0f;        
         
-        canCounterPunch = false;
-        animPlayTimer = 0f;
+        //canCounterPunch = false;
         comboCount = 0;
         timer = 0;
 
@@ -198,6 +203,8 @@ public class PlayerController : MonoBehaviour {
         myBlockState = BlockState.NONE;
         myActionUsed = ActionUsed.NONE;
 
+        anim.SetFloat("punchSpeed", 1.0f);
+        anim.SetFloat("punchPower", 1.0f);
         anim.SetBool("LEFT", false);        
         anim.SetBool("RIGHT", false);        
     }
@@ -282,7 +289,8 @@ public class PlayerController : MonoBehaviour {
         return false;
     }
 
-    //Getting punched
+    // Getting punched/damaged
+    // Damage is calculated on the receiving end
     void OnTriggerEnter(Collider other)
     {
         //IF a 'hand' collided with us...
@@ -335,24 +343,27 @@ public class PlayerController : MonoBehaviour {
                 if (myBlockState == BlockState.BLOCK) //and the block isn't in enter/exit...
                 {
                     if (opponentCtrl.myZone == Zone.HIGH_LEFT)  //and the other guy is punching high
-                    {
-                        //get damaged
-                        myBody.rightArm.GetComponent<BodyPart>().totalHealth -= DamageCalculations.GetDamage(this, opponentCtrl, false, true);
-                        if (timedBlockThreshold <= buttonHoldTimer) //do a timed block if the block was quick enough
+                    {                        
+                        if (buttonHoldTimer <= timedBlockThreshold) //do a timed block if the block was quick enough
                         {
                             //enable coutner punch and instantly set punch power to the other guy's punch power.
                             canCounterPunch = true;
                             punchPower = opponentCtrl.punchPower;
                         }
+
+                        myBody.rightArm.GetComponent<BodyPart>().totalHealth -= DamageCalculations.GetDamage(this, opponentCtrl, false, true);
+
                     }
                     if (opponentCtrl.myZone == Zone.HIGH_RIGHT) //same as above but with the opponent's right arm.
                     {
-                        myBody.leftArm.GetComponent<BodyPart>().totalHealth -= DamageCalculations.GetDamage(this, opponentCtrl, true, true);
-                        if (timedBlockThreshold <= buttonHoldTimer)
+                        if (buttonHoldTimer <= timedBlockThreshold)
                         {
                             canCounterPunch = true;
                             punchPower = opponentCtrl.punchPower;
                         }
+
+                        myBody.leftArm.GetComponent<BodyPart>().totalHealth -= DamageCalculations.GetDamage(this, opponentCtrl, true, true);
+
                     }
                     if (opponentCtrl.myZone == Zone.LOW_LEFT)   //if opponent punches LOW and we blocked HIGH we get punched
                     {
@@ -362,10 +373,10 @@ public class PlayerController : MonoBehaviour {
                         {
                             myState = PlayerState.FLINCH;
                         }
-                        else
-                        {
-                            myState = PlayerState.IDLE;
-                        }
+                        //else
+                        //{
+                        //    myState = PlayerState.IDLE;
+                        //}
                     }
 
                     if (opponentCtrl.myZone == Zone.LOW_RIGHT)  //same as above but with the opponent's right arm.
@@ -375,10 +386,10 @@ public class PlayerController : MonoBehaviour {
                         {
                             myState = PlayerState.FLINCH;
                         }
-                        else
-                        {
-                            myState = PlayerState.IDLE;
-                        }
+                        //else
+                        //{
+                        //    myState = PlayerState.IDLE;
+                        //}
                     }
                 }
 
@@ -387,48 +398,54 @@ public class PlayerController : MonoBehaviour {
                 {
                     if (opponentCtrl.myZone == Zone.LOW_LEFT)
                     {
-                        myBody.rightArm.GetComponent<BodyPart>().totalHealth -= DamageCalculations.GetDamage(this, opponentCtrl, false, true);
-                        if (timedBlockThreshold <= buttonHoldTimer)
+                        if (buttonHoldTimer <= timedBlockThreshold)
                         {
                             canCounterPunch = true;
                             punchPower = opponentCtrl.punchPower;
                         }
+
+                        myBody.rightArm.GetComponent<BodyPart>().totalHealth -= DamageCalculations.GetDamage(this, opponentCtrl, false, true);
+
                     }
 
                     if (opponentCtrl.myZone == Zone.LOW_RIGHT)
                     {
-                        myBody.leftArm.GetComponent<BodyPart>().totalHealth -= DamageCalculations.GetDamage(this, opponentCtrl, true, true);
-                        if (timedBlockThreshold <= buttonHoldTimer)
+                        if (buttonHoldTimer <= timedBlockThreshold)
                         {
                             canCounterPunch = true;
                             punchPower = opponentCtrl.punchPower;
                         }
+
+                        myBody.leftArm.GetComponent<BodyPart>().totalHealth -= DamageCalculations.GetDamage(this, opponentCtrl, true, true);
+
                     }
 
                     if (opponentCtrl.myZone == Zone.HIGH_LEFT)
                     {
-                        myBody.head.GetComponent<BodyPart>().totalHealth -= DamageCalculations.GetDamage(this, opponentCtrl, false);
+                        
                         if (opponentCtrl.punchPower >= flinchThreshold)
                         {
                             myState = PlayerState.FLINCH;
                         }
-                        else
-                        {
-                            myState = PlayerState.IDLE;
-                        }
+                        //else
+                        //{
+                        //    myState = PlayerState.IDLE;
+                        //}
+                        myBody.head.GetComponent<BodyPart>().totalHealth -= DamageCalculations.GetDamage(this, opponentCtrl, false);
                     }
 
                     if (opponentCtrl.myZone == Zone.HIGH_RIGHT)
                     {
-                        myBody.head.GetComponent<BodyPart>().totalHealth -= DamageCalculations.GetDamage(this, opponentCtrl, true);
+                        
                         if (opponentCtrl.punchPower >= flinchThreshold)
                         {
                             myState = PlayerState.FLINCH;
                         }
-                        else
-                        {
-                            myState = PlayerState.IDLE;
-                        }
+                        //else
+                        //{
+                        //    myState = PlayerState.IDLE;
+                        //}
+                        myBody.head.GetComponent<BodyPart>().totalHealth -= DamageCalculations.GetDamage(this, opponentCtrl, true);
                     }
                 }                
                 
@@ -437,13 +454,22 @@ public class PlayerController : MonoBehaviour {
     }
 
     //Punching
-    public void DoPunch(string stateName, bool isCounter = false, bool isCombo = false)
+    public void DoPunch(string stateName, bool isCounter = false)
+    
     {
         myActionUsed = GetActionUsed();
         if (myActionUsed == ActionUsed.BUTTON)
-            lastButtonPressed = stateName;
+        {
+            if (stateName == "RightPunchLow")
+                lastButtonPressed = "RightPunchHigh";            
+            else if (stateName == "LeftPunchLow")
+                lastButtonPressed = "LeftPunchHigh";
+            else
+                lastButtonPressed = stateName;
+        }
 
-        punchPower = 0f;
+        if (!isCounter)
+            punchPower = 0f;
 
         //Do a different punch based on button state
         switch (stateName)
@@ -488,6 +514,56 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    public void DoDodge()
+    {
+        if (xbox.isPlayer1)
+        {
+            if (myMoveState == MoveState.DODGERAM)
+            {
+                if (transform.position.z >= MaxDodgePos.z)
+                    transform.Translate(-transform.forward * Time.deltaTime * 2.5f);
+                else
+                    myMoveState = MoveState.RETURN;
+            }            
+
+            if (myMoveState == MoveState.RETURN)
+            {
+                if (transform.position.z <= startingPos.z)
+                    transform.Translate(transform.forward * Time.deltaTime * 1.25f);
+                else
+                {
+                    transform.position = startingPos;
+                    myMoveState = MoveState.DEFAULT;
+                }
+            }
+        }
+        
+
+        //TODO make it work for player 2
+        if (!xbox.isPlayer1)
+        {
+            if (myMoveState == MoveState.DODGERAM)
+            {
+                if (transform.position.z <= -MaxDodgePos.z)
+                    transform.Translate(transform.forward * Time.deltaTime * 2.5f);
+                else
+                    myMoveState = MoveState.RETURN;
+            }
+
+            if (myMoveState == MoveState.RETURN)
+            {
+                if (transform.position.z >= startingPos.z)
+                    transform.Translate(-transform.forward * Time.deltaTime * 1.25f);
+                else
+                {
+                    transform.position = startingPos;
+                    myMoveState = MoveState.DEFAULT;
+                }
+            }
+        }
+
+    }
+
     void HandleInput()
     {
         yAxisRightJoystick = xbox.GetAxis("JoystickRightY");
@@ -521,14 +597,13 @@ public class PlayerController : MonoBehaviour {
         }
 
         //If we're attacking in some way...
-        if (myState == PlayerState.ATTACK || myState == PlayerState.COMBO || myState == PlayerState.COUNTER)
+        if (myState == PlayerState.ATTACK || myState == PlayerState.COMBO)
         {
             // Attack Cancelling - cancel attack if block is pressed.
             if (xbox.GetButton("Block") && myAttackState == AttackState.WINDUP)
             {                
-                anim.SetTrigger("attackCancel");
-                myState = PlayerState.IDLE;
-                //anim.ResetTrigger("attackCancel");
+                anim.SetBool("attackCancel", true);
+                myState = PlayerState.IDLE;                
             }
 
             //If the attack hasn't triggered yet, do a punch in the given zone.
@@ -555,42 +630,46 @@ public class PlayerController : MonoBehaviour {
             if (myAttackState == AttackState.WINDUP)
             {
                 //Only charge punch if the respective punch button is held down.
-                    switch (myActionUsed)
-                    {
-                        case ActionUsed.BUTTON:
-                            if (xbox.GetButton(lastButtonPressed))
-                            {
-                                punchPower += Time.deltaTime;
-                                myBody.stamina -= Time.deltaTime;
-                            }
-                            if (!xbox.GetButton(lastButtonPressed) || punchPower >= maxPunchCharge)
-                            {
-                                myBody.stamina -= punchPower;
-                                myAttackState = AttackState.RELEASE;
-                            }
-                            break;
-                        case ActionUsed.JOYSTICK:
-                        case ActionUsed.LTRIGGER:
-                        case ActionUsed.RTRIGGER:
-                            if (IsAPunchAxisCharging())
-                            {
-                                punchPower += Time.deltaTime;
-                                myBody.stamina -= Time.deltaTime;
-                            }
-                            if (!IsAPunchAxisCharging() || punchPower >= maxPunchCharge)
-                            {
-                                myBody.stamina -= punchPower;
-                                myAttackState = AttackState.RELEASE;
-                            }
-                            break;
+                switch (myActionUsed)
+                {
+                    case ActionUsed.BUTTON:
+                        if (xbox.GetButton(lastButtonPressed))
+                        {
+                            punchPower += Time.deltaTime;
+                            myBody.stamina -= (Time.deltaTime * 10);
+                        }
 
-                        case ActionUsed.NONE:
-                        default:
-                            Debug.Log("It shouldn't be possible to get here!!!");
-                            break;                        
-                    }
+                        if (!xbox.GetButton(lastButtonPressed) || punchPower >= maxPunchCharge)
+                        {
+                            myBody.stamina -= (punchPower * 10);
+                            myAttackState = AttackState.RELEASE;
+                        }
 
-                }            
+                        break;
+
+                    case ActionUsed.JOYSTICK:
+                    case ActionUsed.LTRIGGER:
+                    case ActionUsed.RTRIGGER:
+
+                        if (IsAPunchAxisCharging())
+                        {
+                            punchPower += Time.deltaTime;
+                            myBody.stamina -= (Time.deltaTime * 10);
+                        }
+                        if (!IsAPunchAxisCharging() || punchPower >= maxPunchCharge)
+                        {
+                            myBody.stamina -= (punchPower * 10);
+                            myAttackState = AttackState.RELEASE;
+                        }
+                        break;
+
+                    case ActionUsed.NONE:
+                    default:
+                        Debug.Log("It shouldn't be possible to get here!!!");
+                        break;                        
+                }
+
+            }            
 
             // Attack finished released, start/continue a combo
             if (myAttackState == AttackState.IMPACT || myAttackState == AttackState.RECOVERY)
@@ -635,6 +714,7 @@ public class PlayerController : MonoBehaviour {
             if (xbox.GetButton("Block") && myBlockState != BlockState.EXIT)
             {
                 buttonHoldTimer += Time.deltaTime;
+                myBody.stamina -= Time.deltaTime;
             }
 
             if (myBlockState == BlockState.ENTER)
@@ -667,14 +747,13 @@ public class PlayerController : MonoBehaviour {
             }
 
             //COUNTER-PUNCH, a punch that comes directly out of block mode            
-            // WIP
             if (canCounterPunch)
             {
                 if (isRightAttackPressed())
                 {
-                    anim.SetBool("block", false);
-                    myBlockState = BlockState.NONE;
-                    myState = PlayerState.ATTACK;
+                    //anim.SetBool("block", false);
+                    anim.SetBool("RIGHTCOUNTER", true);
+                    myBlockState = BlockState.EXIT;                    
                     if (isDucking())
                         DoPunch("RightPunchLow", true);
                     else
@@ -683,20 +762,33 @@ public class PlayerController : MonoBehaviour {
 
                 if (isLeftAttacksPressed())
                 {
-                    anim.SetBool("block", false);
-                    myBlockState = BlockState.NONE;
-                    myState = PlayerState.ATTACK;
+                    //anim.SetBool("block", false);
+                    anim.SetBool("LEFTCOUNTER", true);
+                    myBlockState = BlockState.EXIT;                    
                     if (isDucking())
                         DoPunch("LeftPunchLow", true);
                     else
                         DoPunch("LeftPunchHigh", true);
                 }
             }
-        }     
+        }   
+        
+        if (myMoveState == MoveState.DEFAULT)
+        {
+            if (xbox.GetButtonUp("Duck"))
+            {
+                if (myBody.stamina >= dodgeCost)
+                {
+                    myBody.stamina -= dodgeCost;
+                    myMoveState = MoveState.DODGERAM;
+                }
+            }
+        }
     }
 
-    // For automated logic updates and animations. Input and user actions should go into HandleInput.
-    void Update () {
+    // For automated logic updates and animations. 
+    // Input and user actions should go into HandleInput.
+    void Update () {        
 
         HandleInput();        
 
@@ -708,7 +800,7 @@ public class PlayerController : MonoBehaviour {
                 //Debug.Log("ATTACKSTATE: " + myAttackState);
                 //Windup animations and timer increase
                 if (myAttackState == AttackState.IDLE)
-                {                    
+                {
                     
                 }
 
@@ -743,18 +835,19 @@ public class PlayerController : MonoBehaviour {
                 {                    
                     halo.GetType().GetProperty("enabled").SetValue(halo, false, null);
 
+                    anim.SetFloat("punchSpeed", myBody.stamina/100 * anim.GetFloat("punchSpeed") );
+                    anim.SetFloat("punchPower", punchPower);
+
                     //Animation stuff
                     if (anim.GetBool("RIGHT"))
-                    {
+                    {                        
                         anim.SetBool("RIGHT", false);
                     }
 
                     if (anim.GetBool("LEFT"))
                     {
                         anim.SetBool("LEFT", false);
-                    }
-
-                    anim.SetFloat("punchPower", punchPower);
+                    }                   
 
                     //Punch collision
                     if (IsPunchCollide() == true)
@@ -774,6 +867,15 @@ public class PlayerController : MonoBehaviour {
                 //Combo timer while punch is in impact or recovery
                 if (myAttackState == AttackState.RECOVERY || myAttackState == AttackState.IMPACT)
                 {
+                    //if (canCounterPunch == true)
+                    //    canCounterPunch = false;
+
+                    if (anim.GetBool("LEFTCOUNTER") == true)
+                        anim.SetBool("LEFTCOUNTER", false);
+
+                    if (anim.GetBool("RIGHTCOUNTER") == true)
+                        anim.SetBool("RIGHTCOUNTER", false);
+
                     timer += Time.deltaTime;
                     if (timer >= comboWindowTime)
                     {
@@ -790,9 +892,10 @@ public class PlayerController : MonoBehaviour {
 
                 // TODO: Add juice to show player is throwing a counter
                 // TODO: Switch from hard-coded 2f to variable
+
                 timer += Time.deltaTime;
                 //End counter if timer is up
-                if (timer >= 2f && myAttackState != AttackState.RELEASE)
+                if (timer >= 1f && myAttackState != AttackState.RELEASE)
                 {
                     myState = PlayerState.IDLE;
                 }
@@ -807,7 +910,6 @@ public class PlayerController : MonoBehaviour {
                     timer += Time.deltaTime;
                     if (timer >= blockEnterTime)
                     {
-                        //Debug.Log("BLOCKSTATE: Timer is done, can Block now.");
                         timer = 0;                        
                         myBlockState = BlockState.NONE;
                     }
@@ -836,6 +938,13 @@ public class PlayerController : MonoBehaviour {
                     anim.SetBool("blockLow", false);
                     anim.SetBool("blockEnter", false);
 
+                    if (canCounterPunch)
+                    {
+                        myState = PlayerState.ATTACK;
+                        myAttackState = AttackState.RELEASE;
+                        myBlockState = BlockState.NONE;
+                    }
+
                     timer += Time.deltaTime;
                     
                     if (timer >= blockExitTime)
@@ -850,7 +959,6 @@ public class PlayerController : MonoBehaviour {
                 break;
 
             case PlayerState.FLINCH:
-                //Debug.Log("STATE: I am in FLINCH");
 
                 anim.SetBool("flinch", true);
                 timer += Time.deltaTime;
@@ -866,8 +974,20 @@ public class PlayerController : MonoBehaviour {
 
             case PlayerState.IDLE:
             default:
-                ClearStuff();
+                ClearStuff();                
                 break;              
+        }
+
+        // Dodge stuff
+        switch (myMoveState)
+        {            
+            case MoveState.DODGERAM:                
+            case MoveState.RETURN:
+                DoDodge();
+                break;
+            case MoveState.DEFAULT:
+            default:
+                break;
         }
     }
 }

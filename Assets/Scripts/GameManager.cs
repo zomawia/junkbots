@@ -18,6 +18,9 @@ public class GameManager : MonoBehaviour {
 
     private void Awake()
     {
+        updateParts(0, 0, 0, 0, true);
+        updateParts(0, 0, 0, 0, false);
+
         //Set the instance to this...but only once
         if (instance == null)
             instance = this;

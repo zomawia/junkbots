@@ -51,17 +51,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00d1272ebf0ace34faf58aa6fbd88681, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player1: {fileID: 114917085543913326, guid: f12d48eddf0491f4c96703648aa9a4a3, type: 2}
-  player2: {fileID: 114806778817666574, guid: 220a8e848d444d2438e6da5515781ed0, type: 2}
+  player1: {fileID: 114900295398327448, guid: 1627ab8585a269e4da72e0f798dbc7fc, type: 2}
+  player2: {fileID: 114841557067130114, guid: e7c1de2d980b46848bfd3707366ce461, type: 2}
   heads:
-  - {fileID: 1457491231126220, guid: f78fc2b4ad1fe4f4db572ca37e92b8ea, type: 2}
-  - {fileID: 1566401109341798, guid: 74cacecb914e1614a9409766c5c68cee, type: 2}
+  - {fileID: 1997387112292490, guid: 2ae3739c8e3ecb640b76063518028b5c, type: 2}
+  - {fileID: 1667363422941260, guid: 3df478f9d77a65949855348c1e896169, type: 2}
   torsos:
-  - {fileID: 1974521609268742, guid: 07339c11c67ac75418c9146b99893435, type: 2}
-  - {fileID: 1308406615830470, guid: a4ea5c71f99e0da49945f36523f638a4, type: 2}
-  - {fileID: 1081006773119984, guid: e2c24f51027fd3f4a8502cea57595af7, type: 2}
-  - {fileID: 1910966658008190, guid: 18e8356934d58fa429cee34e047d077a, type: 2}
+  - {fileID: 1130098652498538, guid: 01c0e9b18f1345c4597db59a1a72d9a7, type: 2}
+  - {fileID: 1130098652498538, guid: 01c0e9b18f1345c4597db59a1a72d9a7, type: 2}
+  - {fileID: 1130098652498538, guid: 01c0e9b18f1345c4597db59a1a72d9a7, type: 2}
+  - {fileID: 1130098652498538, guid: 01c0e9b18f1345c4597db59a1a72d9a7, type: 2}
   arms:
-  - {fileID: 1290635736471892, guid: 4a4a30106c2b35342a753d72a90948cd, type: 2}
-  - {fileID: 1439390328505722, guid: 9c3eacda50ba8a449bea7aece5994f47, type: 2}
-  - {fileID: 1454945858117648, guid: 5aa77e0a7bfd2e546ac1c6b477aa0320, type: 2}
+  - {fileID: 1746843371970306, guid: e5f53038ce29205419f819a26bad736c, type: 2}
+  - {fileID: 1007946112162738, guid: dac067d10c7b83f46a920c8bcd1d832e, type: 2}
+  - {fileID: 1861884170482382, guid: c42b8531923976744b015d3dba0c7aff, type: 2}

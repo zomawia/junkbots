@@ -100,6 +100,7 @@
     <Compile Include="Assets\Scripts\PartList.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\ZomScripts\BACKUP_PlayerController.cs" />
+    <Compile Include="Assets\ZomScripts\PunchData.cs" />
     <Compile Include="Assets\ginger\InstantReplay.cs" />
     <Compile Include="Assets\menus\CharacterSelectManager.cs" />
     <Compile Include="Assets\menus\ImageSelector.cs" />

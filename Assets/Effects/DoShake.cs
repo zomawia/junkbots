@@ -14,6 +14,8 @@ void Update()
     {
         if (amnt > 0)
         {
+            
+
             transform.position = pos + Random.insideUnitSphere * amnt;
             transform.rotation = new Quaternion(rot.x * .2f,
                                 rot.y  * .2f,

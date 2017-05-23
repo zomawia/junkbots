@@ -171,14 +171,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 0
   baseDamage: 0
-  head: {fileID: 0}
-  torso: {fileID: 0}
-  leftArm: {fileID: 0}
-  rightArm: {fileID: 0}
-  headPos: {fileID: 4298264952599124}
-  torsoPos: {fileID: 4064635718122860}
-  leftArmPos: {fileID: 4725206152037728}
-  rightArmPos: {fileID: 4178639543540240}
+  stamina: 100
+  maxStamina: 100
+  head: {fileID: 1997387112292490, guid: 2ae3739c8e3ecb640b76063518028b5c, type: 2}
+  torso: {fileID: 1130098652498538, guid: 01c0e9b18f1345c4597db59a1a72d9a7, type: 2}
+  piston: {fileID: 1790253968666562, guid: b37ab647ae6d7ec4dae2a3bb5ce791e0, type: 2}
+  neck: {fileID: 1697124904815098, guid: 68b06096da8aa2d469815085b457fdd3, type: 2}
+  upperArm: {fileID: 1292317033492884, guid: 358c07624d5bc8749b81dde5e2ba55af, type: 2}
+  leftArm: {fileID: 1746843371970306, guid: e5f53038ce29205419f819a26bad736c, type: 2}
+  rightArm: {fileID: 1746843371970306, guid: e5f53038ce29205419f819a26bad736c, type: 2}
 --- !u!114 &114764736107872502
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -203,10 +204,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myBody: {fileID: 114597597219647312}
+  opponentCtrl: {fileID: 0}
+  leftTrigger: 0
+  rightTrigger: 0
+  yAxisRightJoystick: 0
+  xAxisRightJoystick: 0
+  yAxisLeftJoystick: 0
+  xAxisLeftJoystick: 0
+  axisThreshold: 0.3
   punchPower: 0
+  flinchThreshold: 5
   myState: 0
   myAttackState: 0
   myBlockState: 0
   myZone: 0
+  myMoveState: 0
+  myActionUsed: 0
   leftHand: {fileID: 0}
   rightHand: {fileID: 0}
+  startingPos: {x: 0, y: 0, z: 0}
+  MaxDodgePos: {x: 0, y: 0, z: 0}

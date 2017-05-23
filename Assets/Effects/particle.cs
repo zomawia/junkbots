@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class particle : MonoBehaviour {
 
-    private ParticleSystem psytem;
-  
+    public ParticleSystem psytem;
+    
 
     void Awake()
     {
         psytem = GetComponentInChildren<ParticleSystem>();
+        
     }
 
     void OnTriggerEnter(Collider collision)
@@ -17,4 +18,6 @@ public class particle : MonoBehaviour {
         psytem.Play();
 
     }
+
+    
 }
