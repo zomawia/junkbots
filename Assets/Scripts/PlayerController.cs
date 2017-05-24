@@ -57,9 +57,7 @@ public class PlayerController : MonoBehaviour {
 
     public CharacterData myBody;
     public PlayerController opponentCtrl;
-    CameraShake cameraShake;
-
-    //LinkedList<PunchData> punchQueue;
+    CameraShake cameraShake;    
 
     public float leftTrigger = 0f;
     public float rightTrigger = 0f;
@@ -69,7 +67,7 @@ public class PlayerController : MonoBehaviour {
     public float xAxisLeftJoystick = 0f;
     public float axisThreshold = .3f;
 
-    //For physics layers    
+    //For physics layers that detect hits during a swing 
     int playerLayer = 0;
     int opponentLayer = 0;
 
@@ -82,6 +80,7 @@ public class PlayerController : MonoBehaviour {
     float comboSpeedBuff = .2f;
 
     float dodgeCost = 20f;
+    bool attackCancelled = false;
 
     public float punchPower = 0f;
     float maxPunchCharge = 1.5f;
@@ -92,7 +91,7 @@ public class PlayerController : MonoBehaviour {
     public float buttonHoldTimer = 0f;
     float timedBlockThreshold = 1.5f;
     
-    float blockEnterTime = .25f;
+    float blockEnterTime = .1f;
     float blockExitTime = .7f;
 
     public float flinchThreshold = 5f;
@@ -117,6 +116,8 @@ public class PlayerController : MonoBehaviour {
     Component halo;
     public ParticleSystem charge;
     public ParticleSystem plasma;
+    public AudioManager audioManager;
+
     public Animator anim { get; set; }
 
     //Transforms positions to check collisions when punches are thrown
@@ -207,7 +208,7 @@ public class PlayerController : MonoBehaviour {
         myState = PlayerState.IDLE;
         myZone = Zone.NONE;
         myBlockState = BlockState.NONE;
-        myActionUsed = ActionUsed.NONE;
+        myActionUsed = ActionUsed.NONE;        
 
         anim.SetFloat("punchSpeed", 1.0f);
         anim.SetFloat("punchPower", 1.0f);
@@ -306,8 +307,7 @@ public class PlayerController : MonoBehaviour {
             opponentCtrl.myState == PlayerState.COUNTER))
         {            
             //Flinch if we got punched while we weren't blocking, combo-ing, or already flinching
-            if (myAttackState == AttackState.WINDUP || 
-                myAttackState == AttackState.RECOVERY || 
+            if (myAttackState == AttackState.WINDUP || myAttackState == AttackState.RECOVERY ||
                 myState == PlayerState.IDLE)
             {
                 //Flinch if the punch was powerful enough to flinch us
@@ -607,9 +607,10 @@ public class PlayerController : MonoBehaviour {
         {
             // Attack Cancelling - cancel attack if block is pressed.
             if (xbox.GetButton("Block") && myAttackState == AttackState.WINDUP)
-            {                
-                anim.SetBool("attackCancel", true);
-                myState = PlayerState.IDLE;                
+            {
+                attackCancelled = true;
+                anim.SetTrigger("attackCancel");
+                myAttackState = AttackState.RECOVERY;
             }
 
             //If the attack hasn't triggered yet, do a punch in the given zone.
@@ -757,9 +758,8 @@ public class PlayerController : MonoBehaviour {
             {
                 if (isRightAttackPressed())
                 {
-                    //anim.SetBool("block", false);
-                    anim.SetBool("RIGHTCOUNTER", true);
-                    myBlockState = BlockState.EXIT;                    
+                    anim.SetTrigger("RIGHTCOUNTER");                    
+                    //myState = PlayerState.ATTACK;                                    
                     if (isDucking())
                         DoPunch("RightPunchLow", true);
                     else
@@ -768,9 +768,8 @@ public class PlayerController : MonoBehaviour {
 
                 if (isLeftAttacksPressed())
                 {
-                    //anim.SetBool("block", false);
-                    anim.SetBool("LEFTCOUNTER", true);
-                    myBlockState = BlockState.EXIT;                    
+                    anim.SetTrigger("LEFTCOUNTER");
+                    //myState = PlayerState.ATTACK;
                     if (isDucking())
                         DoPunch("LeftPunchLow", true);
                     else
@@ -812,8 +811,8 @@ public class PlayerController : MonoBehaviour {
 
                 if (myAttackState == AttackState.WINDUP)
                 {
-                    Component halo = gameObject.GetComponent("Halo");
-                    
+                    Component halo = gameObject.GetComponent("Halo");                    
+
                     if (myZone == Zone.HIGH_RIGHT || myZone == Zone.LOW_RIGHT)
                     {
                         anim.SetBool("RIGHT", true);
@@ -839,11 +838,19 @@ public class PlayerController : MonoBehaviour {
 
                 //Punch release
                 if (myAttackState == AttackState.RELEASE)
-                {                    
+                {              
                     halo.GetType().GetProperty("enabled").SetValue(halo, false, null);
                     charge.Pause();
                     charge.gameObject.SetActive(false);
-                    anim.SetFloat("punchSpeed", myBody.stamina/100 * anim.GetFloat("punchSpeed") );
+
+                    // Set animation speed
+                    float speed = anim.GetFloat("punchSpeed") * myBody.stamina / 100;
+                    anim.SetFloat("punchSpeed", speed);
+                    if (myState == PlayerState.COMBO)
+                    {
+                        anim.SetFloat("punchSpeed", speed + comboSpeedBuff);
+                    }
+
                     anim.SetFloat("punchPower", punchPower);
 
                     //Animation stuff
@@ -856,6 +863,13 @@ public class PlayerController : MonoBehaviour {
                     {
                         anim.SetBool("LEFT", false);
                     }                   
+                    if (canCounterPunch)
+                    {
+                        anim.SetBool("block", false);
+                        anim.SetBool("blockLow", false);
+                        anim.SetBool("blockEnter", false);
+                        canCounterPunch = false;
+                    }
 
                     //Punch collision
                     if (IsPunchCollide() == true)
@@ -875,39 +889,41 @@ public class PlayerController : MonoBehaviour {
                 //Combo timer while punch is in impact or recovery
                 if (myAttackState == AttackState.RECOVERY || myAttackState == AttackState.IMPACT)
                 {
-                    //if (canCounterPunch == true)
-                    //    canCounterPunch = false;
-
-                    if (anim.GetBool("LEFTCOUNTER") == true)
-                        anim.SetBool("LEFTCOUNTER", false);
-
-                    if (anim.GetBool("RIGHTCOUNTER") == true)
-                        anim.SetBool("RIGHTCOUNTER", false);
+                    if (attackCancelled)
+                    {
+                        attackCancelled = false;                        
+                        halo.GetType().GetProperty("enabled").SetValue(halo, false, null);
+                        charge.Pause();
+                        charge.gameObject.SetActive(false);
+                    }
 
                     timer += Time.deltaTime;
                     if (timer >= comboWindowTime)
                     {
                         //Debug.Log("Not going into Combo. Back to Idle");
-                        timer = 0;                        
+                        timer = 0;
+                        anim.ResetTrigger("attackCancel");
+                        anim.SetBool("RIGHT", false);
+                        anim.SetBool("LEFT", false);
                         myState = PlayerState.IDLE;
                     }
                 }
                 break;
 
-            case PlayerState.COUNTER:
-                Debug.Log("STATE: I am in COUNTER");
-                // Wait to see if player will do input to go into ATTACK
+            //case PlayerState.COUNTER:
+            //    Debug.Log("STATE: I am in COUNTER");
+            //    // Wait to see if player will do input to go into ATTACK
 
-                // TODO: Add juice to show player is throwing a counter
-                // TODO: Switch from hard-coded 2f to variable
+            //    // TODO: Add juice to show player is throwing a counter
+            //    // TODO: Switch from hard-coded 2f to variable
 
-                timer += Time.deltaTime;
-                //End counter if timer is up
-                if (timer >= 1f && myAttackState != AttackState.RELEASE)
-                {
-                    myState = PlayerState.IDLE;
-                }
-                break;
+            //    timer += Time.deltaTime;
+            //    //End counter if timer is up
+            //    if (timer >= 1f && myAttackState != AttackState.RELEASE)
+            //    {
+            //        myState = PlayerState.IDLE;
+            //    }
+            //    break;
 
             case PlayerState.BLOCK:
                 //Block enter timer.
@@ -946,13 +962,6 @@ public class PlayerController : MonoBehaviour {
                     anim.SetBool("blockLow", false);
                     anim.SetBool("blockEnter", false);
 
-                    if (canCounterPunch)
-                    {
-                        myState = PlayerState.ATTACK;
-                        myAttackState = AttackState.RELEASE;
-                        myBlockState = BlockState.NONE;
-                    }
-
                     timer += Time.deltaTime;
                     
                     if (timer >= blockExitTime)
@@ -969,7 +978,6 @@ public class PlayerController : MonoBehaviour {
             case PlayerState.FLINCH:
                 
                 anim.SetBool("flinch", true);
-                Debug.Log("asdasdasdasd");
                 plasma.time = 0;
                 plasma.Stop();
                 plasma.Play();
@@ -989,7 +997,11 @@ public class PlayerController : MonoBehaviour {
 
             case PlayerState.IDLE:
             default:
-                ClearStuff();                
+                ClearStuff();
+
+                anim.ResetTrigger("RIGHTCOUNTER");
+                anim.ResetTrigger("LEFTCOUNTER");
+
                 break;              
         }
 

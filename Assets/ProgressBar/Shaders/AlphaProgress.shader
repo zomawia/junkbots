@@ -4,7 +4,7 @@ Shader "Custom/AlphaProgress" {
 	Properties {
 		_MainTex ("Base (RGB) Trans (A)", 2D) = "white" {}
 		_MaskTex("Mask Tex", 2D)=""{}
-		_Progress("Progress", Range(-0.01,1)) = 0.1
+		_Progress("Progress", Range(-0.01,.85)) = 0.1
 	}
 	
 	CGINCLUDE

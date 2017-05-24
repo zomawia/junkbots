@@ -6,53 +6,31 @@ AvatarMask:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: BODY
-  m_Mask: 01000000000000000000000001000000010000000000000000000000000000000000000001000000010000000000000000000000
+  m_Mask: 00000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   m_Elements:
   - m_Path: 
     m_Weight: 1
-  - m_Path: BlueGuy
+  - m_Path: robot
     m_Weight: 1
-  - m_Path: Root
+  - m_Path: robot_piston_ball_joint
+    m_Weight: 0
+  - m_Path: robot_piston_ball_joint/robot_roller_ball_joint
+    m_Weight: 0
+  - m_Path: robot_piston_ball_joint/robot_roller_ball_joint/robot_chest_joint
+    m_Weight: 0
+  - m_Path: robot_piston_ball_joint/robot_roller_ball_joint/robot_chest_joint/robot_left_shoulder_joint
+    m_Weight: 0
+  - m_Path: robot_piston_ball_joint/robot_roller_ball_joint/robot_chest_joint/robot_left_shoulder_joint/robot_left_elbow_joint
+    m_Weight: 0
+  - m_Path: robot_piston_ball_joint/robot_roller_ball_joint/robot_chest_joint/robot_left_shoulder_joint/robot_left_elbow_joint/robot_left_wrist_joint
+    m_Weight: 0
+  - m_Path: robot_piston_ball_joint/robot_roller_ball_joint/robot_chest_joint/robot_neck_ball_joint
     m_Weight: 1
-  - m_Path: Root/Hip
+  - m_Path: robot_piston_ball_joint/robot_roller_ball_joint/robot_chest_joint/robot_neck_ball_joint/robot_head_ball_joint
     m_Weight: 1
-  - m_Path: Root/Hip/Body
+  - m_Path: robot_piston_ball_joint/robot_roller_ball_joint/robot_chest_joint/robot_right_shoulder_joint
     m_Weight: 0
-  - m_Path: Root/Hip/Body/Chest
+  - m_Path: robot_piston_ball_joint/robot_roller_ball_joint/robot_chest_joint/robot_right_shoulder_joint/robot_right_elbow_joint
     m_Weight: 0
-  - m_Path: Root/Hip/Body/Chest/Collar_L
+  - m_Path: robot_piston_ball_joint/robot_roller_ball_joint/robot_chest_joint/robot_right_shoulder_joint/robot_right_elbow_joint/robot_right_wrist_joint
     m_Weight: 0
-  - m_Path: Root/Hip/Body/Chest/Collar_L/Shoulder_L
-    m_Weight: 0
-  - m_Path: Root/Hip/Body/Chest/Collar_L/Shoulder_L/ForeArm_L
-    m_Weight: 0
-  - m_Path: Root/Hip/Body/Chest/Collar_L/Shoulder_L/ForeArm_L/Hand_L
-    m_Weight: 0
-  - m_Path: Root/Hip/Body/Chest/Collar_R
-    m_Weight: 0
-  - m_Path: Root/Hip/Body/Chest/Collar_R/Shoulder_R
-    m_Weight: 0
-  - m_Path: Root/Hip/Body/Chest/Collar_R/Shoulder_R/ForeArm_R
-    m_Weight: 0
-  - m_Path: Root/Hip/Body/Chest/Collar_R/Shoulder_R/ForeArm_R/Hand_R
-    m_Weight: 0
-  - m_Path: Root/Hip/Body/Chest/Neck
-    m_Weight: 0
-  - m_Path: Root/Hip/Body/Chest/Neck/Head
-    m_Weight: 0
-  - m_Path: Root/Hip/Thigh_L
-    m_Weight: 1
-  - m_Path: Root/Hip/Thigh_L/Shin_L
-    m_Weight: 1
-  - m_Path: Root/Hip/Thigh_L/Shin_L/Foot_L
-    m_Weight: 1
-  - m_Path: Root/Hip/Thigh_L/Shin_L/Foot_L/Toe_L
-    m_Weight: 1
-  - m_Path: Root/Hip/Thigh_R
-    m_Weight: 1
-  - m_Path: Root/Hip/Thigh_R/Shin_R
-    m_Weight: 1
-  - m_Path: Root/Hip/Thigh_R/Shin_R/Foot_R
-    m_Weight: 1
-  - m_Path: Root/Hip/Thigh_R/Shin_R/Foot_R/Toe_R
-    m_Weight: 1

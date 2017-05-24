@@ -7,6 +7,7 @@ public enum Part { head, torso, leftArm, rightArm};
 [RequireComponent(typeof(Collider))]
 public class BodyPart : MonoBehaviour {
 
+    public string partName;
     public Part part;
 
     public float maxHealth = 1;
@@ -22,7 +23,7 @@ public class BodyPart : MonoBehaviour {
     public float punchDamage = 1;
     public float blockAmount = 1;
 
-    public float totalHealth { get; set; }
+    public float totalHealth;
 
     public CharacterData character { get; set; }
 

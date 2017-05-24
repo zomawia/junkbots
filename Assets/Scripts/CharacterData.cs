@@ -19,14 +19,14 @@ public class CharacterData : MonoBehaviour {
     public GameObject leftArm;
     public GameObject rightArm;
 
-    private GameObject headActive;
-    private GameObject torsoActive;
+    public GameObject headActive { get; set; }
+    public GameObject torsoActive { get; set; }
     private GameObject pistonActive;
     private GameObject neckActive;
     private GameObject upperLeftArmActive;
     private GameObject upperRightArmActive;
-    private GameObject leftArmActive;
-    private GameObject rightArmActive;
+    public GameObject leftArmActive { get; set; }
+    public GameObject rightArmActive { get; set; }
 
     private Transform pistonBone;
     private Transform torsoBone;
@@ -140,16 +140,22 @@ public class CharacterData : MonoBehaviour {
 
         pistonActive = Instantiate(piston, pistonBone);
         torsoActive = Instantiate(torso, torsoBone);
+        torsoActive.GetComponent<BodyPart>().character = this;
+
         neckActive = Instantiate(neck, neckBone);
         headActive = Instantiate(head, headBone);
+        headActive.GetComponent<BodyPart>().character = this;
+
         upperRightArmActive = Instantiate(upperArm, rightShoulderBone);
         upperRightArmActive.transform.Rotate(180, 0, 0);
         rightArmActive = Instantiate(rightArm, rightElbowBone);
         rightArmActive.transform.localRotation = Quaternion.Euler(0, -35, 0);
         rightArmActive.transform.localPosition = new Vector3(0, 0, rightArmActive.transform.localPosition.z * -1);
+        rightArmActive.GetComponent<BodyPart>().character = this;
 
         upperLeftArmActive = Instantiate(upperArm, leftShoulderBone);
         leftArmActive = Instantiate(leftArm, leftElbowBone);
+        leftArmActive.GetComponent<BodyPart>().character = this;
 
         activeParts.Add(pistonActive);
         activeParts.Add(torsoActive);
@@ -160,13 +166,13 @@ public class CharacterData : MonoBehaviour {
         activeParts.Add(upperLeftArmActive);
         activeParts.Add(leftArmActive);
 
-        if(headActive.GetComponent<BodyPart>().totalHealth <= 0 &&
-                   torsoActive.GetComponent<BodyPart>().totalHealth <= 0)
-        {
-            gameover.gameObject.SetActive(true);
-            smoke.gameObject.SetActive(true);
-            PlayerController.Destroy(null);
-        }
+        //if(headActive.GetComponent<BodyPart>().totalHealth <= 0 &&
+        //           torsoActive.GetComponent<BodyPart>().totalHealth <= 0)
+        //{
+        //    gameover.gameObject.SetActive(true);
+        //    smoke.gameObject.SetActive(true);
+        //    PlayerController.Destroy(null);
+        //}
     }
 
 }

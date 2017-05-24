@@ -995,15 +995,17 @@ MonoBehaviour:
   baseDamage: 10
   stamina: 100
   maxStamina: 100
-  head: {fileID: 1667363422941260, guid: 3df478f9d77a65949855348c1e896169, type: 2}
-  torso: {fileID: 1130098652498538, guid: 01c0e9b18f1345c4597db59a1a72d9a7, type: 2}
-  piston: {fileID: 1790253968666562, guid: b37ab647ae6d7ec4dae2a3bb5ce791e0, type: 2}
-  neck: {fileID: 1697124904815098, guid: 68b06096da8aa2d469815085b457fdd3, type: 2}
-  upperArm: {fileID: 1292317033492884, guid: 358c07624d5bc8749b81dde5e2ba55af, type: 2}
-  leftArm: {fileID: 1007946112162738, guid: dac067d10c7b83f46a920c8bcd1d832e, type: 2}
-  rightArm: {fileID: 1007946112162738, guid: dac067d10c7b83f46a920c8bcd1d832e, type: 2}
+  head: {fileID: 1605832394191802, guid: d6b20f183f424a3428a3425dc66c5d1d, type: 2}
+  torso: {fileID: 1058369787809196, guid: 5663b3edd88eafe4796c2c1fb22dad3d, type: 2}
+  piston: {fileID: 1957583766498624, guid: 0456c48b12a2b7f45ab105d7df04e136, type: 2}
+  neck: {fileID: 1407461254006742, guid: 3c70060f59d118c44b40817691c573d2, type: 2}
+  upperArm: {fileID: 1836298635522666, guid: b553236eeabacdb41b055c135a7dc90e, type: 2}
+  leftArm: {fileID: 1293929911492762, guid: d1b399520b53211449c6826b70ca00af, type: 2}
+  rightArm: {fileID: 1293929911492762, guid: d1b399520b53211449c6826b70ca00af, type: 2}
   useManager: 1
   isPlayer1: 1
+  gameover: {fileID: 0}
+  smoke: {fileID: 0}
 --- !u!114 &114900295398327448
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1025,13 +1027,18 @@ MonoBehaviour:
   xAxisLeftJoystick: 0
   axisThreshold: 0.3
   punchPower: 0
+  buttonHoldTimer: 0
   flinchThreshold: 5
+  canCounterPunch: 0
   myState: 0
   myAttackState: 0
   myBlockState: 0
   myZone: 0
   myMoveState: 0
   myActionUsed: 0
+  charge: {fileID: 0}
+  plasma: {fileID: 0}
+  audioManager: {fileID: 0}
   leftHand: {fileID: 4565208155237768}
   rightHand: {fileID: 4419233867754954}
   startingPos: {x: 0, y: 0, z: 0}
